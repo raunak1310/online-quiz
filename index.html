@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Online Quiz App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .quiz-container {
+            background: #fff;
+            padding: 20px;
+            width: 400px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            margin-bottom: 15px;
+        }
+
+        .option {
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .option.selected {
+            background-color: #d1e7ff;
+            border-color: #0d6efd;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px;
+            width: 100%;
+            background: #0d6efd;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #084298;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h2 id="question">Online Quiz</h2>
+    <div id="options"></div>
+    <button id="startBtn">Start Quiz</button>
+    <button id="nextBtn" class="hidden">Next</button>
+</div>
+
+<script>
+    const quizData = [
+        {
+            question: "What does HTML stand for?",
+            options: [
+                "Hyper Text Markup Language",
+                "High Text Machine Language",
+                "Hyperlinks Text Mark Language",
+                "Home Tool Markup Language"
+            ],
+            answer: 0
+        },
+        {
+            question: "Which language is used for styling web pages?",
+            options: ["HTML", "JQuery", "CSS", "XML"],
+            answer: 2
+        },
+        {
+            question: "Which is not a JavaScript framework?",
+            options: ["React", "Angular", "Django", "Vue"],
+            answer: 2
+        },
+        {
+            question: "Which symbol is used for comments in JavaScript?",
+            options: ["//", "<!-- -->", "#", "**"],
+            answer: 0
+        },
+        {
+            question: "Which company developed JavaScript?",
+            options: ["Microsoft", "Netscape", "Google", "Oracle"],
+            answer: 1
+        }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let selectedOption = null;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const startBtn = document.getElementById("startBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    startBtn.onclick = () => {
+        startBtn.classList.add("hidden");
+        loadQuestion();
+        nextBtn.classList.remove("hidden");
+    };
+
+    function loadQuestion() {
+        optionsEl.innerHTML = "";
+        selectedOption = null;
+
+        const q = quizData[currentQuestion];
+        questionEl.textContent = q.question;
+
+        q.options.forEach((option, index) => {
+            const div = document.createElement("div");
+            div.className = "option";
+            div.textContent = option;
+            div.onclick = () => selectOption(div, index);
+            optionsEl.appendChild(div);
+        });
+    }
+
+    function selectOption(element, index) {
+        document.querySelectorAll(".option").forEach(opt =>
+            opt.classList.remove("selected")
+        );
+        element.classList.add("selected");
+        selectedOption = index;
+    }
+
+    nextBtn.onclick = () => {
+        if (selectedOption === null) {
+            alert("Please select an option!");
+            return;
+        }
+
+        if (selectedOption === quizData[currentQuestion].answer) {
+            score++;
+        }
+
+        currentQuestion++;
+
+        if (currentQuestion < quizData.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    };
+
+    function showResult() {
+        questionEl.textContent = "Quiz Completed!";
+        optionsEl.innerHTML = `<h3>Your Score: ${score} / ${quizData.length}</h3>`;
+        nextBtn.classList.add("hidden");
+    }
+</script>
+
+</body>
+</html>
